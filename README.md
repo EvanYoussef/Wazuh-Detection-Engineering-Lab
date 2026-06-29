@@ -119,33 +119,6 @@ Virtual Machines
 
 ---
 
-# Repository Structure
-
-```
-Wazuh-Detection-Engineering-Lab/
-
-│
-├── README.md
-│
-├── Lab-Architecture/
-│
-├── Detections/
-│   ├── 01-Encoded-PowerShell/
-│   ├── 02-Invoke-WebRequest/
-│   ├── 03-Certutil/
-│   ├── 04-mshta/
-│   ├── 05-rundll32/
-│   └── ...
-│
-├── Screenshots/
-│
-├── Reports/
-│
-└── Resources/
-```
-
----
-
 # Detection Methodology
 
 Each detection follows the same workflow:
