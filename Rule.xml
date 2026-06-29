@@ -1,0 +1,15 @@
+<rule id="100503" level="14">
+  <if_group>sysmon_event1</if_group>
+
+  <field name="win.eventdata.originalFileName" type="pcre2">(?i)^MSHTA\.EXE$</field>
+
+  <field name="win.eventdata.commandLine" type="pcre2">(?i)(about:|http|https|javascript:|vbscript:|\.hta)</field>
+
+  <description>Custom Detection: Suspicious MSHTA Execution</description>
+
+  <group>local,windows,sysmon,mshta,lolbin,defense_evasion,attack.t1218,</group>
+
+  <mitre>
+    <id>T1218.005</id>
+  </mitre>
+</rule>
