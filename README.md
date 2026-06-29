@@ -1,210 +1,79 @@
-# Wazuh-Detection-Engineering-Lab
-A SOC Environment Created For Evan Youssefs' Resume.
+# Detection 03 – Suspicious MSHTA Execution
 
-# Wazuh Detection Engineering Lab
+## Objective
 
-## Overview
-
-This repository documents the design, implementation, and validation of a Detection Engineering laboratory using **Wazuh SIEM**, **Sysmon**, **Windows 11**, **Ubuntu Server**, **Kali Linux**, and **VMware Workstation**.
-
-The purpose of this project is to simulate real-world attacker techniques, collect endpoint telemetry, develop custom Wazuh detection rules, and validate detections using the **MITRE ATT&CK Framework**.
-
-This project demonstrates practical Security Operations Center (SOC) and Detection Engineering skills through hands-on attack simulation, log analysis, custom rule development, and incident investigation.
+Detect suspicious executions of `mshta.exe`, a Windows Living Off the Land Binary (LOLBin) commonly abused by attackers to execute malicious HTA applications, JavaScript, VBScript, or remotely hosted payloads.
 
 ---
 
-# Objectives
+## MITRE ATT&CK
 
-* Build an enterprise-style SIEM lab
-* Configure Wazuh Manager, Indexer, and Dashboard
-* Deploy Windows endpoints with Sysmon and the Wazuh Agent
-* Generate realistic attack activity
-* Develop custom Wazuh detection rules
-* Validate detections using endpoint telemetry
-* Map detections to the MITRE ATT&CK Framework
-* Document each detection with screenshots, attack simulations, and technical analysis
+**Tactic**
 
----
+- Defense Evasion
 
-# Lab Architecture
+**Technique**
 
-Host Machine
-
-* Windows 11
-* VMware Workstation
-
-Virtual Machines
-
-* Ubuntu Server
-
-  * Wazuh Manager
-  * Wazuh Dashboard
-  * Wazuh Indexer
-* Windows 11
-
-  * Sysmon
-  * Wazuh Agent
-* Kali Linux
-
-  * Attack Simulation
+- T1218.005 – Mshta
 
 ---
 
-# Technologies Used
+## Attack Simulation
 
-## Operating Systems
+The following commands were used during testing:
 
-* Ubuntu Server
-* Windows 11
-* Kali Linux
-
-## Security Tools
-
-* Wazuh SIEM
-* Sysmon
-* PowerShell
-* MITRE ATT&CK Framework
-
-## Virtualization
-
-* VMware Workstation
-
-## Languages
-
-* XML
-* PowerShell
-* Linux Bash
-
-## Investigation Tools
-
-* Discover (Wazuh Dashboard)
-* DQL (Dashboard Query Language)
-
----
-
-# Detection Coverage
-
-## Execution
-
-* ✅ Encoded PowerShell Execution
-* ⏳ PowerShell Download Cradle (Invoke-WebRequest)
-* ⏳ Invoke-Expression (IEX)
-* ⏳ Suspicious cmd.exe Execution
-
-## Defense Evasion
-
-* ⏳ mshta.exe
-* ⏳ regsvr32.exe
-* ⏳ rundll32.exe
-
-## Persistence
-
-* ⏳ Registry Run Keys
-* ⏳ Scheduled Tasks
-
-## Credential Access
-
-* ⏳ LSASS Memory Access
-* ⏳ Mimikatz Indicators
-
-## Discovery
-
-* ⏳ Network Discovery
-* ⏳ SMB Share Enumeration
-
-## Lateral Movement
-
-* ⏳ PsExec
-* ⏳ Remote Desktop (RDP)
-
----
-
-# Detection Methodology
-
-Each detection follows the same workflow:
-
-1. Simulate attacker behavior
-2. Collect endpoint telemetry using Sysmon
-3. Forward logs through the Wazuh Agent
-4. Analyze telemetry within Wazuh
-5. Develop a custom detection rule
-6. Validate successful detection
-7. Document findings
-8. Map the technique to MITRE ATT&CK
-
----
-
-# Sample Detection
-
-## Detection
-
-PowerShell Base64 Encoded Command Execution
-
-### MITRE ATT&CK
-
-Technique:
-
-* T1059.001 – PowerShell
-
-Tactic:
-
-* Execution
-
-### Attack Simulation
-
-```
-powershell.exe -EncodedCommand RwBlAHQALQBEAGEAdABlAA==
+```cmd
+mshta.exe about:blank
 ```
 
-### Result
+```cmd
+mshta.exe javascript:close()
+```
 
-* Successfully detected using Sysmon Event ID 1
-* Custom Wazuh detection rule created
-* Detection validated through the Wazuh Dashboard
-
----
-
-# Skills Demonstrated
-
-* Detection Engineering
-* Security Monitoring
-* Threat Detection
-* SIEM Administration
-* Endpoint Telemetry
-* Sysmon Configuration
-* Wazuh Rule Development
-* Windows Event Analysis
-* MITRE ATT&CK Mapping
-* DQL Querying
-* XML Rule Development
-* Linux Administration
-* VMware Virtualization
-* Security Operations
-* Incident Investigation
+These commands are harmless but generate realistic telemetry associated with common attacker tradecraft.
 
 ---
 
-# Lessons Learned
+## Detection Logic
 
-Throughout this project I gained hands-on experience deploying and administering a SIEM environment, configuring endpoint telemetry with Sysmon, developing custom Wazuh detection rules, investigating Windows events, validating detections against simulated attacks, and mapping alerts to the MITRE ATT&CK framework. The project also strengthened troubleshooting, log analysis, and detection engineering skills.
+This custom Wazuh rule monitors Sysmon Process Creation (Event ID 1) events and identifies executions of `MSHTA.EXE` with command-line arguments commonly associated with malicious activity, including:
 
----
-
-# Future Enhancements
-
-* Active Directory Integration
-* Linux Endpoint Monitoring
-* Sigma Rule Conversion
-* Threat Intelligence Integration
-* VirusTotal Integration
-* Email Alerting
-* SOAR Automation
-* Additional Windows Endpoints
-* Detection Tuning
-* Dashboard Visualizations
+- about:
+- javascript:
+- vbscript:
+- http
+- https
+- .hta
 
 ---
 
-# Disclaimer
+## Validation
 
-This project is intended for educational purposes within an isolated virtual lab environment. All attack simulations are performed on systems owned and controlled by the author. No techniques demonstrated in this repository should be executed against systems without explicit authorization.
+✅ Sysmon Event ID 1 Generated
+
+✅ Wazuh Ingested the Event
+
+✅ Custom Rule Triggered
+
+✅ MITRE ATT&CK Mapping Verified
+
+---
+
+## Files
+
+- Rule.xml
+- Attack.md
+- Investigation.md
+
+---
+
+## Analyst Recommendation
+
+Because `mshta.exe` is frequently abused to execute remote scripts and bypass application controls, analysts should investigate:
+
+- Parent process
+- Command line arguments
+- Remote URLs
+- User account
+- Integrity level
+- Child processes
