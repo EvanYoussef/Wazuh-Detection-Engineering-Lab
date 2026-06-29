@@ -1,0 +1,9 @@
+<rule id="100501" level="14">
+  <if_group>sysmon_event1</if_group>
+  <field name="win.eventdata.commandLine" type="pcre2">(?i)powershell\.exe.+\-\b(encodedcommand|e|ea|ec|encodeda|encode|en|enco)\b</field>
+  <description>Custom Detection: PowerShell Base64 Encoded Command Executed</description>
+  <group>local,windows,sysmon,powershell,encoded_command,attack.execution,</group>
+  <mitre>
+    <id>T1059.001</id>
+  </mitre>
+</rule>
