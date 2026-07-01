@@ -1,210 +1,80 @@
-# Wazuh-Detection-Engineering-Lab
-A SOC Environment Created For Evan Youssefs' Resume.
+# Detection 05 – Failed SMB Network Authentication
 
-# Wazuh Detection Engineering Lab
+## Objective
 
-## Overview
-
-This repository documents the design, implementation, and validation of a Detection Engineering laboratory using **Wazuh SIEM**, **Sysmon**, **Windows 11**, **Ubuntu Server**, **Kali Linux**, and **VMware Workstation**.
-
-The purpose of this project is to simulate real-world attacker techniques, collect endpoint telemetry, develop custom Wazuh detection rules, and validate detections using the **MITRE ATT&CK Framework**.
-
-This project demonstrates practical Security Operations Center (SOC) and Detection Engineering skills through hands-on attack simulation, log analysis, custom rule development, and incident investigation.
+Detect failed SMB authentication attempts originating from a remote host using Windows Security Event ID 4625.
 
 ---
 
-# Objectives
+## MITRE ATT&CK
 
-* Build an enterprise-style SIEM lab
-* Configure Wazuh Manager, Indexer, and Dashboard
-* Deploy Windows endpoints with Sysmon and the Wazuh Agent
-* Generate realistic attack activity
-* Develop custom Wazuh detection rules
-* Validate detections using endpoint telemetry
-* Map detections to the MITRE ATT&CK Framework
-* Document each detection with screenshots, attack simulations, and technical analysis
+**Tactic**
 
----
+- Credential Access
 
-# Lab Architecture
+**Technique**
 
-Host Machine
-
-* Windows 11
-* VMware Workstation
-
-Virtual Machines
-
-* Ubuntu Server
-
-  * Wazuh Manager
-  * Wazuh Dashboard
-  * Wazuh Indexer
-* Windows 11
-
-  * Sysmon
-  * Wazuh Agent
-* Kali Linux
-
-  * Attack Simulation
+- T1110 – Brute Force
 
 ---
 
-# Technologies Used
+## Lab Environment
 
-## Operating Systems
-
-* Ubuntu Server
-* Windows 11
-* Kali Linux
-
-## Security Tools
-
-* Wazuh SIEM
-* Sysmon
-* PowerShell
-* MITRE ATT&CK Framework
-
-## Virtualization
-
-* VMware Workstation
-
-## Languages
-
-* XML
-* PowerShell
-* Linux Bash
-
-## Investigation Tools
-
-* Discover (Wazuh Dashboard)
-* DQL (Dashboard Query Language)
+- Wazuh Manager (Ubuntu Server)
+- Windows 11 Endpoint
+- Kali Linux Attacker
+- Sysmon
+- VMware Workstation
 
 ---
 
-# Detection Coverage
+## Attack Simulation
 
-## Execution
+From the Kali Linux VM:
 
-* ✅ Encoded PowerShell Execution
-* ⏳ PowerShell Download Cradle (Invoke-WebRequest)
-* ⏳ Invoke-Expression (IEX)
-* ⏳ Suspicious cmd.exe Execution
-
-## Defense Evasion
-
-* ⏳ mshta.exe
-* ⏳ regsvr32.exe
-* ⏳ rundll32.exe
-
-## Persistence
-
-* ⏳ Registry Run Keys
-* ⏳ Scheduled Tasks
-
-## Credential Access
-
-* ⏳ LSASS Memory Access
-* ⏳ Mimikatz Indicators
-
-## Discovery
-
-* ⏳ Network Discovery
-* ⏳ SMB Share Enumeration
-
-## Lateral Movement
-
-* ⏳ PsExec
-* ⏳ Remote Desktop (RDP)
-
----
-
-# Detection Methodology
-
-Each detection follows the same workflow:
-
-1. Simulate attacker behavior
-2. Collect endpoint telemetry using Sysmon
-3. Forward logs through the Wazuh Agent
-4. Analyze telemetry within Wazuh
-5. Develop a custom detection rule
-6. Validate successful detection
-7. Document findings
-8. Map the technique to MITRE ATT&CK
-
----
-
-# Sample Detection
-
-## Detection
-
-PowerShell Base64 Encoded Command Execution
-
-### MITRE ATT&CK
-
-Technique:
-
-* T1059.001 – PowerShell
-
-Tactic:
-
-* Execution
-
-### Attack Simulation
-
-```
-powershell.exe -EncodedCommand RwBlAHQALQBEAGEAdABlAA==
+```bash
+smbclient -L //192.168.179.128 -U fakeuser
 ```
 
-### Result
-
-* Successfully detected using Sysmon Event ID 1
-* Custom Wazuh detection rule created
-* Detection validated through the Wazuh Dashboard
+An invalid username and password were intentionally supplied to generate a failed network logon.
 
 ---
 
-# Skills Demonstrated
+## Detection Logic
 
-* Detection Engineering
-* Security Monitoring
-* Threat Detection
-* SIEM Administration
-* Endpoint Telemetry
-* Sysmon Configuration
-* Wazuh Rule Development
-* Windows Event Analysis
-* MITRE ATT&CK Mapping
-* DQL Querying
-* XML Rule Development
-* Linux Administration
-* VMware Virtualization
-* Security Operations
-* Incident Investigation
+The custom Wazuh rule detects:
+
+- Windows Security Event ID 4625
+- Network Logon (Type 3)
+- Source IP Address: 192.168.179.130
+- Failed NTLM authentication
 
 ---
 
-# Lessons Learned
+## Validation
 
-Throughout this project I gained hands-on experience deploying and administering a SIEM environment, configuring endpoint telemetry with Sysmon, developing custom Wazuh detection rules, investigating Windows events, validating detections against simulated attacks, and mapping alerts to the MITRE ATT&CK framework. The project also strengthened troubleshooting, log analysis, and detection engineering skills.
-
----
-
-# Future Enhancements
-
-* Active Directory Integration
-* Linux Endpoint Monitoring
-* Sigma Rule Conversion
-* Threat Intelligence Integration
-* VirusTotal Integration
-* Email Alerting
-* SOAR Automation
-* Additional Windows Endpoints
-* Detection Tuning
-* Dashboard Visualizations
+- ✅ Windows Security Event Generated
+- ✅ Wazuh Alert Generated
+- ✅ Custom Rule Triggered
+- ✅ MITRE ATT&CK Mapping Verified
 
 ---
 
-# Disclaimer
+## Files
 
-This project is intended for educational purposes within an isolated virtual lab environment. All attack simulations are performed on systems owned and controlled by the author. No techniques demonstrated in this repository should be executed against systems without explicit authorization.
+- Rule.xml
+- Attack.md
+- Investigation.md
+
+---
+
+## Analyst Recommendations
+
+Investigate:
+
+- Source IP address
+- Username targeted
+- Number of failed attempts
+- Authentication package
+- Related successful logons
+- Possible brute-force activity
