@@ -1,0 +1,15 @@
+<rule id="100504" level="12">
+  <if_group>sysmon_event1</if_group>
+
+  <field name="win.eventdata.originalFileName" type="pcre2">(?i)^RUNDLL32\.EXE$</field>
+
+  <field name="win.eventdata.commandLine" type="pcre2">(?i)(\.dll|Control_RunDLL|javascript|url\.dll|shell32\.dll)</field>
+
+  <description>Custom Detection: Rundll32 Suspicious Execution</description>
+
+  <group>local,windows,sysmon,rundll32,lolbin,defense_evasion,attack.t1218,</group>
+
+  <mitre>
+    <id>T1218.011</id>
+  </mitre>
+</rule>
