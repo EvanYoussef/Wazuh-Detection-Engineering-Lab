@@ -1,0 +1,15 @@
+<rule id="100505" level="10">
+  <if_sid>60122</if_sid>
+
+  <field name="win.eventdata.logonType">^3$</field>
+
+  <field name="win.eventdata.ipAddress">^192\.168\.179\.130$</field>
+
+  <description>Custom Detection: Failed Network Logon from Kali</description>
+
+  <group>local,windows,authentication_failed,smb,network_logon,attack.credential_access,</group>
+
+  <mitre>
+    <id>T1110</id>
+  </mitre>
+</rule>
