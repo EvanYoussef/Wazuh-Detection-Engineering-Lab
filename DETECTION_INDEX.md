@@ -5,3 +5,4 @@
 | 03 | MSHTA Execution         | T1218.005       | ✅ Complete |
 | 04 | Regsvr32 Execution      | T1218.010       | ⏳ Planned  |
 | 05 | Rundll32 Execution      | T1218.011       | ✅ Complete  |
+| 06 | SMB Authentication      | T1110           | ✅ Complete  |
